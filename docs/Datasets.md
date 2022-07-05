@@ -10,7 +10,17 @@
 - LLAMAS(Labeled Lane Markers): https://unsupervised-llamas.com/llamas/ (It's lane markers, not in segmentation dataset format!)
 - BDD100K: https://doc.bdd100k.com/
 
-## Traffic Sign Recognition
+## Road Sign Recognition
+
+- https://www.kaggle.com/datasets/andrewmvd/road-sign-detection (!China)
+- https://cg.cs.tsinghua.edu.cn/traffic-sign/ (China)
+- https://benchmark.ini.rub.de/gtsdb_dataset.html (German)
+- CCTSDB: https://github.com/csust7zhangjm/CCTSDB (China)
+- CVTS, From https://github.com/chenshen03/Traffic-Sign-Detection-with-RetinaNet (China)
+- Traffic Signs Dataset: http://www.cvl.isy.liu.se/en/research/datasets/traffic-signs-dataset/ (Sweden)
+- BDD: https://bdd-data.berkeley.edu/ (US)
+- ImageNet
+  
 
 ## Self-Driving
 
