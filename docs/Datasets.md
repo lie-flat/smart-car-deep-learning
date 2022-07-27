@@ -1,7 +1,9 @@
 # Available Datasets
 
-## Lane Segmentation
+## Lane Segmentation / Semantic Segmentation for Self Driving
 
+- Cityscapes: https://www.cityscapes-dataset.com/
+- CamVid: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
 - KITTI: http://www.cvlibs.net/datasets/kitti/eval_road.php
 - From FIVE: https://www.five.ai/datasets (application required for non-commerical use)
 - CULane: https://xingangpan.github.io/projects/CULane.html (It's lane markers, not in segmentation dataset format!)
