@@ -1,0 +1,8 @@
+{
+    "configuration": "CPUFreq=240,FlashMode=qio,PartitionScheme=huge_app,FlashFreq=80,DebugLevel=none",
+    "board": "esp32:esp32:esp32cam",
+    "programmer": "esp32:esptool",
+    "port": "COM6",
+    "sketch": "leds_and_buttons.ino",
+    "output": "../build"
+}
