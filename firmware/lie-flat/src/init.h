@@ -1,7 +1,8 @@
-#include <driver/mcpwm.h>
-#include "pin.h"
+#pragma once
 
-inline __attribute__((always_inline)) void init_motor() {
+#include <driver/mcpwm.h>
+
+inline __attribute__((always_inline)) void init_motor(int motorA, int motorB) {
   mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, motorA);
   mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, motorB);
 
@@ -16,7 +17,7 @@ inline __attribute__((always_inline)) void init_motor() {
   mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &motor_pwm_cfg);
 }
 
-inline __attribute__((always_inline)) void init_servo() {
+inline __attribute__((always_inline)) void init_servo(int servo) {
   mcpwm_gpio_init(MCPWM_UNIT_1, MCPWM1A, servo);
 
   mcpwm_config_t servo_pwm_cfg = {
@@ -27,6 +28,4 @@ inline __attribute__((always_inline)) void init_servo() {
   };
 
   mcpwm_init(MCPWM_UNIT_1, MCPWM_TIMER_1, &servo_pwm_cfg);
-  SET_SERVO_DUTY(7.5);  // mid pos
-  SERVO_PWM_START();
 }
