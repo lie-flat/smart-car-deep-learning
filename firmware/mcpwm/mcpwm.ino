@@ -1,6 +1,4 @@
-#include <init.h>
-#include <ctrl.h>
-#include <pin.h>
+#include <lie-flat.h>
 
 void setup() {
   init_motor(motorA, motorB);
