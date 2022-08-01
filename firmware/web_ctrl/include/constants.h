@@ -1,0 +1,3 @@
+const char* SERVO_PARAM = "servo";
+const char* MOTOR_A_PARAM = "motorA";
+const char* MOTOR_B_PARAM = "motorB";
