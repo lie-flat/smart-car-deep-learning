@@ -1,3 +1,5 @@
+#pragma once
+
 // servo
 const int servo = 13;
 const int servoChan = 0;

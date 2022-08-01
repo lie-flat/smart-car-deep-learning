@@ -1,3 +1,5 @@
+#pragma once
+
 #include <driver/mcpwm.h>
 
 #define SET_A_DUTY(duty_cycle) \
