@@ -19,6 +19,15 @@ inline __attribute__((always_inline)) float parse_param(
   return request->getParam(param, true)->value().toFloat();
 }
 
+const int optocoupler = 14;
+volatile int optocoupler_state = 0;
+
+void optocoupler_interrupt() {
+  // Serial.println("INFO: Optocoupler interrupt!");
+  // Serial.printf("INFO: Analog read: %d\n", analogRead(optocoupler));
+  optocoupler_state += digitalRead(optocoupler);
+}
+
 void setup() {
   // put your setup code here, to run once:
   // Motor & Servo
@@ -32,6 +41,9 @@ void setup() {
   init_wifi();
   // MPU6050
   init_mpu(mpu, mpuSDA, mpuSCL);
+  // Optocoupler
+  attachInterrupt(digitalPinToInterrupt(optocoupler), optocoupler_interrupt,
+                  FALLING);
   // Web server
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(200, "text/plain", "Hello, world");
@@ -65,6 +77,9 @@ void setup() {
                       String(gyro.gyro.x) + ",\"y\":" + String(gyro.gyro.y) +
                       ",\"z\":" + String(gyro.gyro.z) +
                       "},\"temp\":" + String(temp.temperature) + "}");
+  });
+  server.on("/optocoupler", HTTP_GET, [](AsyncWebServerRequest* request) {
+    request->send(200, "text/plain", String(optocoupler_state));
   });
   server.onNotFound(notFound);
   server.begin();
