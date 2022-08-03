@@ -13,10 +13,17 @@ void notFound(AsyncWebServerRequest* request) {
   request->send(404, "text/plain", "Not found");
 }
 
-inline __attribute__((always_inline)) float parse_param(
+inline __attribute__((always_inline)) float parse_float_param(
     AsyncWebServerRequest* request,
     const char* param) {
   return request->getParam(param, true)->value().toFloat();
+}
+
+
+inline __attribute__((always_inline)) int parse_int_param(
+    AsyncWebServerRequest* request,
+    const char* param) {
+  return request->getParam(param, true)->value().toInt();
 }
 
 volatile int optocoupler_state = 0;
@@ -49,11 +56,11 @@ void setup() {
   });
   server.on("/cmd", HTTP_POST, [](AsyncWebServerRequest* request) {
     if (request->hasParam(SERVO_PARAM, true))
-      set_servo(parse_param(request, SERVO_PARAM));
+      set_servo(parse_float_param(request, SERVO_PARAM));
     if (request->hasParam(MOTOR_A_PARAM, true))
-      set_a(parse_param(request, MOTOR_A_PARAM));
+      set_a(parse_float_param(request, MOTOR_A_PARAM));
     if (request->hasParam(MOTOR_B_PARAM, true))
-      set_b(parse_param(request, MOTOR_B_PARAM));
+      set_b(parse_float_param(request, MOTOR_B_PARAM));
     request->send(200, "text/plain", "OK");
   });
   server.on("/ping", HTTP_GET, [](AsyncWebServerRequest* request) {
@@ -79,6 +86,17 @@ void setup() {
   });
   server.on("/optocoupler", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(200, "text/plain", String(optocoupler_state));
+  });
+  server.on("/buzz", HTTP_POST, [](AsyncWebServerRequest* request) {
+    int freq = 3000;
+    int duration = 1000;
+    if (request->hasParam(FREQ_PARAM, true))
+      freq = parse_int_param(request, FREQ_PARAM);
+    if (request->hasParam(DURATION_PARAM, true))
+      duration = parse_int_param(request, DURATION_PARAM);
+    Serial.printf("INFO: Buzzing! Freq: %d, duration: %d\n", freq, duration);
+    buzz(freq, duration);
+    request->send(200, "text/plain", "OK");
   });
   server.onNotFound(notFound);
   server.begin();
