@@ -19,7 +19,6 @@ inline __attribute__((always_inline)) float parse_param(
   return request->getParam(param, true)->value().toFloat();
 }
 
-const int optocoupler = 14;
 volatile int optocoupler_state = 0;
 
 void optocoupler_interrupt() {
