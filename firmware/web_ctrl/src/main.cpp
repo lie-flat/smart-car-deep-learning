@@ -11,6 +11,7 @@ AsyncWebServer server(80);
 Adafruit_MPU6050 mpu;
 AsyncUDP udp;
 IPAddress camAddr;
+bool ready = false;
 
 #define FRAME_HEADER "lie-flat device discovery!"
 const char* FRAME_ACK = FRAME_HEADER "\nACK";
@@ -58,6 +59,15 @@ void setup() {
   // Web server
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(200, "text/plain", "Hello, world");
+  });
+  server.on("/init", HTTP_POST, [](AsyncWebServerRequest* request) {
+    if (ready) {
+      udp.close();
+      request->send(200, "text/plain", "OK");
+      Serial.println("INFO: Closing UDP server!");
+      buzz(2000, 1500);
+    }
+    else request->send(425, "text/plain", "Too Early");
   });
   server.on("/cmd", HTTP_POST, [](AsyncWebServerRequest* request) {
     if (request->hasParam(SERVO_PARAM, true))
@@ -157,6 +167,7 @@ void setup() {
       Serial.println("INFO: Found camera at " + camAddr.toString());
       // reply to the client
       packet.print(FRAME_ACK);
+      ready = true;
     });
   }
 }
@@ -165,4 +176,10 @@ void loop() {
   // put your main code here, to run repeatedly:
   // udp.println("Master!");
   delay(1000);
+  if (ready && udp) {
+    // broadcast device discovery frame
+    auto frame = String(FRAME_HEADER) + "\n" + "Info\n" +
+                 WiFi.localIP().toString() + "=board\n" + camAddr.toString() + "=esp32-cam";
+    udp.broadcastTo(frame.c_str(), 1234);
+  }
 }
