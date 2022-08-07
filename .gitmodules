@@ -1,3 +1,6 @@
 [submodule "client/ai/PaddleSeg"]
 	path = client/ai/PaddleSeg
 	url = https://github.com/PaddlePaddle/PaddleSeg
+[submodule "client/ai/PaddleDetection"]
+	path = client/ai/PaddleDetection
+	url = https://github.com/PaddlePaddle/PaddleDetection
