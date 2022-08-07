@@ -8,6 +8,12 @@
 - 固件在 `firmware` 目录下。
 - PC 端软件在 `client` 目录下。
 
+## 初始化
+
+1. 克隆本仓库
+2. 更新 Git 子模块: `git submodule update --init`
+3. 从 Release 页面下载交通标志识别的权重文件 `model.pdiparams` 到 `signdet` 目录下
+
 ## 安装
 
 运行环境：
