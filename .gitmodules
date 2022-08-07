@@ -1,0 +1,3 @@
+[submodule "client/ai/PaddleSeg"]
+	path = client/ai/PaddleSeg
+	url = https://github.com/PaddlePaddle/PaddleSeg
