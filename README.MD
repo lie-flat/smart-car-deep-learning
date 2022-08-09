@@ -35,6 +35,13 @@
   - 若将开发板置于 AP 模式, 用电脑连接开发板的热点, 这会导致电脑无法连接到互联网(除非你有第二张无线网卡/连接有线网络), 因此不建议使用此模式
     - 如果确实需要使用此模式, 打开 `firmware/shared/lie-flat/src/config.h`, 修改 `AP_SSID` 和 `AP_PASSWORD`
     - 并且在下文的配置中把 `firmware/camera_web_server` 的 SSID 和密码 也一并修改为 `AP_SSID` 和 `AP_PASSWORD`
+    - 修改 `firmware/web_ctrl/src/main.cpp`:
+      ```diff
+      // Be sure to define the WiFi mode before include lie-flat.h
+      -#define LIE_FLAT_WIFI_STA
+      +#define LIE_FLAT_WIFI_AP
+      #include <lie-flat.h>
+      ```
 
 ### 开发环境
 
