@@ -34,7 +34,7 @@ inline __attribute__((always_inline)) int parse_int_param(
 
 volatile int optocoupler_state = 0;
 
-void optocoupler_interrupt() {
+void IRAM_ATTR optocoupler_interrupt() {
   // Serial.println("INFO: Optocoupler interrupt!");
   // Serial.printf("INFO: Analog read: %d\n", analogRead(optocoupler));
   optocoupler_state += digitalRead(optocoupler);
@@ -55,7 +55,7 @@ void setup() {
   init_mpu(mpu, mpuSDA, mpuSCL);
   // Optocoupler
   attachInterrupt(digitalPinToInterrupt(optocoupler), optocoupler_interrupt,
-                  FALLING);
+                  RISING);
   // Web server
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
     request->send(200, "text/plain", "Hello, world");
