@@ -16,7 +16,7 @@
 - 固件在 `firmware` 目录下。
 - PC 端软件在 `client` 目录下。
 - 道路分割在 `roadseg` 目录下
-- 交通标志识别在 `signdet` 目录下
+- 交通标志识别在 `roadsign` 目录下
 
 ## 初始化
 
