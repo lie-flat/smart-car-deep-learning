@@ -42,6 +42,39 @@
       +#define LIE_FLAT_WIFI_AP
       #include <lie-flat.h>
       ```
+- 在树莓派上从源代码编译 PaddlePaddle. 注意我们采用的是 Manjaro ARM64 发行版，不能使用 arm32 架构的发行版。
+  - Reference: https://qengineering.eu/install-paddlepaddle-on-raspberry-pi-4.html
+  - 假设你有良好的国际网络连接
+  - 因为我们的树莓派在该项目中仅用于单一用途，所以我们不建立虚拟环境，直接使用系统 pip 安装包
+  - `sudo pacman -S base-devel` 安装基础开发工具
+  - `sudo pacman -S protobuf patchelf swig unrar cmake cython python-opencv yay`
+  - `yay -S gcc8 gcc8-fortran`
+  - `sudo pip3 install --upgrade six requests wheel pyyaml numpy protobuf matplotlib nltk scipy`
+  - 注意使用 gcc12 编译会出错，可以创建一个 mabma 环境来安装旧版 (v8.5) 的 `gcc` `g++` `gfortran`
+  - `git clone https://github.com/Qengineering/Paddle --depth=1`
+  - 注意设置内存交换文件，我使用的是 4GB 内存版本，系统默认设置了 5.5GB 的 zram, 所以我不用在进行特殊设置了。
+    - ```bash
+      [kxxt@pi ~]$ swapon
+      NAME       TYPE      SIZE USED PRIO
+      /dev/zram0 partition 5.5G   0B  100
+      ```
+  - 进入 Build 目录： `cd Paddle && mkdir build && cd build`
+  - cmake： 注意替换你的 Python 版本：
+    ```bash
+    cmake .. -D PY_VERSION=3.10 \
+          -D WITH_PYTHON=ON \
+          -D WITH_CONTRIB=OFF \
+          -D WITH_MKL=OFF \
+          -D WITH_MKLDNN=OFF \
+          -D WITH_XBYAK=OFF \
+          -D WITH_TESTING=OFF \
+          -D WITH_ARM=ON \
+          -D ON_INFER=ON \
+          -D CMAKE_BUILD_TYPE=Release
+    ```
+  - `make -j4`
+  - 第一次编译失败后根据此处指示给代码打补丁(注意文件路径稍有不同)： https://github.com/facebookincubator/gloo/issues/332#issuecomment-1146812765
+  - 然后再运行 `make -j4`
 
 ### 开发环境
 
