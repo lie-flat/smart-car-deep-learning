@@ -8,32 +8,40 @@
 - 自动化设备发现协议, 无需手动配置 IP 地址
 - 通过 HTTP 请求控制电机/舵机/蜂鸣器/LED
 - 使用游戏手柄遥控小车(游戏手柄连接到电脑, 运行 `client/joystick.py`)
-- 人工智能自动驾驶
+- 人工智能自动巡线驾驶，识别不同的交通标志并控制蜂鸣器发出声音
 
 ## 概述
 
 - 作业相关文档在 `docs` 目录下。
 - 固件在 `firmware` 目录下。
 - PC 端软件在 `client` 目录下。
-- 道路分割在 `roadseg` 目录下
+- 道路分割模型在 `roadseg` 目录下
 - 交通标志识别在 `roadsign` 目录下
 
 ## 初始化
 
 1. 克隆本仓库
 2. 更新 Git 子模块: `git submodule update --init` (为了安装 PaddleSeg 和 PaddleDetection)
-3. 从 Release 页面下载交通标志识别的权重文件 `model.pdiparams` 到 `signdet` 目录下
-
+3. 安装依赖： 
 ## 安装
 
 ### 运行环境
 
+以下两者均可
+- ESP32 + 笔记本电脑
+- ESP32 + 树莓派
+
+---
+
 - 硬件： 开发板和 ESP32-CAM
-- 软件： PC 端 Python 3.10+, 在 Windows/Linux 下测试过
-- 热点: 使用电脑或手机开一个热点
-  - 不要离小车太远, 不要使用家里的 WiFi (除非路由器就在小车旁边), 因为 ESP32 板载天线功率不是特别大, 距离远会导致网络延迟过高.
-  - 若将开发板置于 AP 模式, 用电脑连接开发板的热点, 这会导致电脑无法连接到互联网(除非你有第二张无线网卡/连接有线网络), 因此不建议使用此模式
-    - 如果确实需要使用此模式, 打开 `firmware/shared/lie-flat/src/config.h`, 修改 `AP_SSID` 和 `AP_PASSWORD`
+- 软件： PC 端 Python 3.10+, 在 Linux 下测试过，初期在 Windows 下测试过，不保证能在 Windows 上运行
+- 热点
+  - 方案一： 使用电脑或手机开一个热点
+    - 不要离小车太远, 不要使用家里的 WiFi (除非路由器就在小车旁边), 因为 ESP32 板载天线功率不是特别大, 距离远会导致网络延迟过高.
+  - 方案二： 将开发板置于 AP 模式， 用电脑连接开发板的热点
+    - 注意：这会导致电脑无法连接到互联网(除非你有第二张无线网卡/连接有线网络), 但是 ESP32 摄像头和电脑之见的延迟比较低
+    - 你可能需要调整电脑的位置，否则很容易车走着走着，电脑就被断开了 WiFi 连接！
+    - 打开 `firmware/shared/lie-flat/src/config.h`, 修改 `AP_SSID` 和 `AP_PASSWORD`
     - 并且在下文的配置中把 `firmware/camera_web_server` 的 SSID 和密码 也一并修改为 `AP_SSID` 和 `AP_PASSWORD`
     - 修改 `firmware/web_ctrl/src/main.cpp`:
       ```diff
@@ -42,15 +50,19 @@
       +#define LIE_FLAT_WIFI_AP
       #include <lie-flat.h>
       ```
+
+如果要在树莓派上运行交通标志识别，您需要手动编译 PaddlePaddle. (当然您也可以修改代码，改用 Paddle Lite)
+
 - 在树莓派上从源代码编译 PaddlePaddle. 注意我们采用的是 Manjaro ARM64 发行版，不能使用 arm32 架构的发行版。
   - Reference: https://qengineering.eu/install-paddlepaddle-on-raspberry-pi-4.html
   - 假设你有良好的国际网络连接
   - 因为我们的树莓派在该项目中仅用于单一用途，所以我们不建立虚拟环境，直接使用系统 pip 安装包
   - `sudo pacman -S base-devel` 安装基础开发工具
   - `sudo pacman -S protobuf patchelf swig unrar cmake cython python-opencv yay`
-  - `yay -S gcc8 gcc8-fortran`
+  - 使用 `micromamba` 或 `conda` 配置一个**不含 Python 的环境**，安装 `gcc`, `gxx`, `gfortran` (前三者均安装 8.5 左右版本)
+    - 这是因为 paddle 与系统带的 gcc 12 不兼容，强行使用 gcc 12 编译 paddle 会报错
+    - 以下所有操作均在此环境下
   - `sudo pip3 install --upgrade six requests wheel pyyaml numpy protobuf matplotlib nltk scipy`
-  - 注意使用 gcc12 编译会出错，可以创建一个 mabma 环境来安装旧版 (v8.5) 的 `gcc` `g++` `gfortran`
   - `git clone https://github.com/Qengineering/Paddle --depth=1`
   - 注意设置内存交换文件，我使用的是 4GB 内存版本，系统默认设置了 5.5GB 的 zram, 所以我不用在进行特殊设置了。
     - ```bash
@@ -73,8 +85,9 @@
           -D CMAKE_BUILD_TYPE=Release
     ```
   - `make -j4`
-  - 第一次编译失败后根据此处指示给代码打补丁(注意文件路径稍有不同)： https://github.com/facebookincubator/gloo/issues/332#issuecomment-1146812765
+  - 若第一次编译失败，根据此处指示给代码打补丁(注意文件路径稍有不同)： https://github.com/facebookincubator/gloo/issues/332#issuecomment-1146812765
   - 然后再运行 `make -j4`
+  - 最后你会得到一个 `whl` 文件，使用 `pip` 来安装它
 
 ### 开发环境
 
@@ -127,7 +140,9 @@ VCC/GND 照旧
 
 - PC 连接到同一热点
 - 开启电源
-- 运行 `client/main.py`, 该脚本会自动连接开发板，连接成功后，开发板蜂鸣器报警 1.5 秒。
+- 运行主程序
+  - 不使用树莓派：运行 `client/run.py`, 该脚本会自动连接开发板，连接成功后，开发板蜂鸣器报警 1.5 秒。
+  - 使用树莓派：在树莓派上运行 `client/start.sh`
 - 在第一次启动之后, 脚本会生成设备缓存 `devices.cache.json`, 之后连接开发板蜂鸣器不再报警.
 - 如果遇到连接问题(更换热点/IP变更),请删除 `devices.cache.json` 然后重新启动脚本.
 
