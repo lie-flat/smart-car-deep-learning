@@ -46,9 +46,9 @@
 1. 克隆本仓库
 2. 更新 Git 子模块: `git submodule update --init` (为了安装 PaddleSeg 和 PaddleDetection)
 3. 安装依赖(如果需要使用树莓派运行请参考下方说明编译安装 PaddlePaddle)
-  - `pip install -r client/requirements.txt`
-  - `pip install -r client/ai/PaddleDetection/requirements.txt`
-  - `pip install -r client/ai/PaddleSeg/requirements.txt`
+    - `pip install -r client/requirements.txt`
+    - `pip install -r client/ai/PaddleDetection/requirements.txt`
+    - `pip install -r client/ai/PaddleSeg/requirements.txt`
 
 ### 安装
 
