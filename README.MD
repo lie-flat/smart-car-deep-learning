@@ -156,7 +156,8 @@ VCC/GND 照旧
 #### 固件安装
 
 - 使用 Arduino IDE 打开 `firmware/camera_web_server`，修改 WiFi 的 SSID 和密码，与配置步骤中的一样, 下载到 ESP32-CAM 上。
-- 使用 VSCode + PlatformIO 打开 `firmware/main`, 构建并下载到开发板上。
+- 若要使开发板和摄像头连接到外部 WiFi 网络，使用 VSCode + PlatformIO 打开 `firmware/web_ctrl`, 构建并下载到开发板上。
+- 若要让电脑/树莓派连接到开发板的热点，使用 VSCode + PlatformIO 打开 `firmware/main`, 构建并下载到开发板上。
 
 ## 启动
 
