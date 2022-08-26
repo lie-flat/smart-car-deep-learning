@@ -2,6 +2,20 @@
 
 20级数科班 2022年暑期科研实训项目
 
+## 参考资料
+
+- https://github.com/PaddlePaddle/PaddleDetection
+- https://github.com/PaddlePaddle/PaddleSeg
+- https://github.com/georgesung/advanced_lane_detection
+- https://www.masterclass.com/articles/how-to-use-hsv-color-model-in-photography
+- https://stackoverflow.com/questions/48109650/how-to-detect-two-different-colors-using-cv2-inrange-in-python-opencv
+- https://github.com/emirelesg/Self-Driving-Vehicle/
+- https://www.computervision.zone/courses/self-driving-car-using-raspberry-pi/
+- https://github.com/PaddleCV-FAQ/PaddleDetection-FAQ/blob/main/Lite%E9%83%A8%E7%BD%B2/yolov3_for_raspi.md
+- https://aistudio.baidu.com/aistudio/projectdetail/4043400
+- https://docs.arduino.cc/
+- https://docs.platformio.org/en/latest/
+
 ## 功能
 
 - 通过 HTTP 请求读取所有传感器/相机
@@ -18,14 +32,22 @@
 - 道路分割模型在 `roadseg` 目录下
 - 交通标志识别在 `roadsign` 目录下
 
-## 初始化
+
+## 复现指南
+
+
+### 初始化
 
 1. 克隆本仓库
 2. 更新 Git 子模块: `git submodule update --init` (为了安装 PaddleSeg 和 PaddleDetection)
-3. 安装依赖： 
-## 安装
+3. 安装依赖(如果需要使用树莓派运行请参考下方说明编译安装 PaddlePaddle)
+  - `pip install -r client/requirements.txt`
+  - `pip install -r client/ai/PaddleDetection/requirements.txt`
+  - `pip install -r client/ai/PaddleSeg/requirements.txt`
 
-### 运行环境
+### 安装
+
+#### 运行环境
 
 以下两者均可
 - ESP32 + 笔记本电脑
@@ -89,49 +111,49 @@
   - 然后再运行 `make -j4`
   - 最后你会得到一个 `whl` 文件，使用 `pip` 来安装它
 
-### 开发环境
+#### 开发环境
 
 - Visual Studio Code 
 - Git v2+
 - VSCode 的 PlatformIO 插件
 - Arduino IDE v1.8~v2.0.0-rc9
 
-### 配置
+#### 配置
 
 - 打开 `firmware/shared/lie-flat/src/config.h`, 修改 WiFi 的 SSID 和密码
 - 按照 `firmware/shared/lie-flat/src/pin.h`，完成开发板接线。
 
-###  接线
+####  接线
 
-#### 摄像头
+##### 摄像头
 
 <img src="README.assets/IMG_20220809_193332.jpg" alt="IMG_20220809_193332" style="zoom:10%;" />
 
 5V 和 GND 接开发板的 5V 和 GND
 
-#### 舵机
+##### 舵机
 
 舵机接开发板舵机B(注意不要接反)
 
-#### 蜂鸣器
+##### 蜂鸣器
 
 一根杜邦线连接开发板上的中间两个管脚
 
-#### 电机
+##### 电机
 
 积木连接
 
-#### 光电传感器/测速计/optocoupler
+##### 光电传感器/测速计/optocoupler
 
 信号线接 GPIO14, VCC 和 GND 接开发板.
 
-#### MPU6050 六自由度运动传感器
+##### MPU6050 六自由度运动传感器
 
 SCL/SDA 接开发板 SCL/SDA
 
 VCC/GND 照旧
 
-### 固件安装
+#### 固件安装
 
 - 使用 Arduino IDE 打开 `firmware/camera_web_server`，修改 WiFi 的 SSID 和密码，与配置步骤中的一样, 下载到 ESP32-CAM 上。
 - 使用 VSCode + PlatformIO 打开 `firmware/main`, 构建并下载到开发板上。
@@ -140,9 +162,13 @@ VCC/GND 照旧
 
 - PC 连接到同一热点
 - 开启电源
+- WiFi 配置
+  - 方案1: 使用 ESP32 热点，将树莓派/电脑连接到此热点，静态IP，将以下内容写入 `devices.cache.json`: `{"board": "192.168.4.1", "esp32-cam": "192.168.4.2"}`
+  - 方案2: 使用手机/电脑热点，开发板和摄像头连接到此热点，动态IP，脚本会自动寻找设备。
+    - 在第一次运行之后, 脚本会自动生成设备缓存 `devices.cache.json`
+    - 如果遇到连接问题(更换热点/IP变更),请删除 `devices.cache.json` 然后重新启动脚本.
 - 运行主程序
   - 不使用树莓派：运行 `client/run.py`, 该脚本会自动连接开发板，连接成功后，开发板蜂鸣器报警 1.5 秒。
   - 使用树莓派：在树莓派上运行 `client/start.sh`
-- 在第一次启动之后, 脚本会生成设备缓存 `devices.cache.json`, 之后连接开发板蜂鸣器不再报警.
-- 如果遇到连接问题(更换热点/IP变更),请删除 `devices.cache.json` 然后重新启动脚本.
+-  之后连接开发板蜂鸣器不再报警.
 
