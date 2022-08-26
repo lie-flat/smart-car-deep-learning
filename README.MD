@@ -16,6 +16,18 @@
 - https://docs.arduino.cc/
 - https://docs.platformio.org/en/latest/
 
+## 照片展示
+
+<img src="README.assets/IMG_20220826_190447.jpg" alt="地图" style="zoom:30%;" />
+
+<img src="README.assets/IMG_20220826_190538.jpg" style="zoom:33%;" />
+
+<img src="README.assets/IMG_20220826_190551.jpg" style="zoom:33%;" />
+
+<img src="README.assets/IMG_20220826_204604.jpg" style="zoom:33%;" />
+
+<img src="README.assets/IMG_20220826_204613.jpg" style="zoom:33%;" />
+
 ## 功能
 
 - 通过 HTTP 请求读取所有传感器/相机
